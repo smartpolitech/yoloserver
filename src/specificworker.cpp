@@ -34,14 +34,14 @@ SpecificWorker::~SpecificWorker()
 
 }
 
-
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 {
 	char const *cocodata = "src/yololib/cfg/coco.data";
 	char const *yolocfg = "src/yololib/yolo.cfg";
 	char const *yoloweights = "src/yololib/yolo.weights";
-        char const *fich = "src/yololib/dehesa_humano.jpg";
-
+        //char const *fich = "src/yololib/dehesa_humano.jpg";
+        char const *fich = "";
+        
         init_detector(const_cast<char*>(cocodata), const_cast<char*>(yolocfg), const_cast<char*>(yoloweights), const_cast<char*>(fich), .24, .5);
 
   	timer.start(10);
@@ -54,12 +54,17 @@ void SpecificWorker::compute()
     
 	if(lImgs.isEmpty() == false)
 	{
-
+//                 QTime reloj = QTime::currentTime();
+                 QTime relojT = QTime::currentTime();
+                
+//                 qDebug() << "----------------------------------------------";
 		image localImage = createImage( lImgs.pop(id) );
-		//drawImage(localImage);
+//                 qDebug() << __FUNCTION__ << "elapsed image" << reloj.elapsed(); reloj.restart();
 		ResultDetect r = test_detector(.24, .5, localImage);
+//                 qDebug() << __FUNCTION__  << "elapsed detector" << reloj.elapsed(); reloj.restart();
 		processDetections(id, localImage, r.num, r.thresh, r.boxes, r.probs, r.names, r.classes);
-		qDebug() << __FUNCTION__ << "Remaining: " << lImgs.size() << "-------------";
+                qDebug() << __FUNCTION__ <<  "elapsed TOTAL " << relojT.elapsed();
+		
 	}
 }
 
@@ -68,7 +73,7 @@ void SpecificWorker::processDetections(int &id, image im, int num, float thresh,
     int i;
     ListBox myboxes;
 
-    qDebug() << "num" << num;
+    qDebug() << __FUNCTION__ << "num" << num;
     for(i = 0; i < num; ++i)
     {
         if (probs == NULL) continue;

@@ -93,7 +93,7 @@ private:
 //				memset(&img.data[img.w*3], 255, img.w*3);
 				map_imgs[id] = img;
 				id++;
-				qDebug() << "id" << id << "id_first" << id_first;
+				//qDebug() << __FUNCTION__ << "id" << id << "id_first" << id_first;
 				return id-1;
 		};
 		Image pop(int &current)

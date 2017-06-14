@@ -846,23 +846,38 @@ void letterbox_image_into(image im, int w, int h, image boxed)
 
 image letterbox_image(image im, int w, int h)
 {
+    clock_t time1=clock();
+    clock_t time2=clock();
+    
     int new_w = im.w;
     int new_h = im.h;
-    if (((float)w/im.w) < ((float)h/im.h)) {
-        new_w = w;
-        new_h = (im.h * w)/im.w;
-    } else {
+    
+    image boxed = make_image(w, h, im.c);
+    fill_image(boxed, .5);
+    
+    printf("letterbox_image: Tamaios: %d %d %d %d \n", im.w, im.h, w, h);
+    
+    if (((float)w/im.w) < ((float)h/im.h)) 
+    {
+         new_w = w;
+         new_h = (im.h * w)/im.w;
+    } 
+    else 
+    {
         new_h = h;
         new_w = (im.w * h)/im.h;
     }
     image resized = resize_image(im, new_w, new_h);
-    image boxed = make_image(w, h, im.c);
-    fill_image(boxed, .5);
-    //int i;
-    //for(i = 0; i < boxed.w*boxed.h*boxed.c; ++i) boxed.data[i] = 0;
     embed_image(resized, boxed, (w-new_w)/2, (h-new_h)/2); 
     free_image(resized);
+    
+    printf("Letterbox- elapsed in resizing in %f.3 mseconds.\n", sec(clock()-time1)*1000);
+    time1=clock();
+     
+    printf("Letterbox - elapsed total in %f.3 mseconds.\n", sec(clock()-time2)*1000);
+    
     return boxed;
+    
 }
 
 image resize_max(image im, int max)
